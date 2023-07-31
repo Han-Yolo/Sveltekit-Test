@@ -1,0 +1,36 @@
+<script lang="ts">
+	import { invalidate } from '$app/navigation'
+	import { onMount } from 'svelte'
+
+	export let data
+
+	let { supabase, session } = data
+	$: ({ supabase, session } = data)
+
+	onMount(() => {
+		const {
+			data: { subscription }
+		} = supabase.auth.onAuthStateChange((event, _session) => {
+			if (_session?.expires_at !== session?.expires_at) {
+				invalidate('supabase:auth')
+			}
+		})
+
+		return () => subscription.unsubscribe()
+	})
+
+	const handleSignOut = async () => {
+		await supabase.auth.signOut()
+	}
+</script>
+
+<main class="container">
+	<nav style:margin="2em auto">
+		<a href="/">Home</a>
+		{#if session}
+			<button on:click={handleSignOut} style:width="6em">Logout</button>
+		{/if}
+	</nav>
+
+	<slot />
+</main>

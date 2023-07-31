@@ -1,2 +1,7 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+</script>
+
+<h1>Bonjour</h1>
+<a href="/login" role="button" style="width: 100%; margin-bottom: 1em">Login</a>
+<a href="/register" role="button" style="width: 100%; margin-bottom: 1em">Register</a>
+<button> Sign in with Google </button>
