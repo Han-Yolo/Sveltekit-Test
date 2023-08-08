@@ -1,6 +1,7 @@
+import type { Actions } from './$types'
 import { fail } from '@sveltejs/kit'
 
-export const actions = {
+export const actions: Actions = {
 	default: async ({ request, url, locals: { supabase } }) => {
 		console.log('register')
 
@@ -16,7 +17,6 @@ export const actions = {
 			}
 		})
 
-		console.log(error?.message)
 		if (error) {
 			return fail(500, { message: 'Server error. Try again later.', success: false, email })
 		}

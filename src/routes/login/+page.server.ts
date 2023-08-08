@@ -1,9 +1,9 @@
+import type { Actions } from './$types'
 import { fail, redirect } from '@sveltejs/kit'
+import { AuthApiError } from '@supabase/supabase-js'
 
-export const actions = {
-	default: async ({ request, url, locals: { supabase } }) => {
-		console.log('login')
-
+export const actions: Actions = {
+	login: async ({ request, locals: { supabase } }) => {
 		const formData = await request.formData()
 		const email = formData.get('email') as string
 		const password = formData.get('password') as string
@@ -15,12 +15,23 @@ export const actions = {
 
 		if (error) {
 			console.log(error?.message)
-			return fail(500, { message: 'Server error. Try again later.', success: false, email })
-		}
-		throw redirect(303, '/')
 
-		return {
-			success: true
+			if (error instanceof AuthApiError && error.status === 400) {
+				return fail(400, {
+					error: 'Invalid credentials.',
+					values: {
+						email
+					}
+				})
+			}
+			return fail(500, {
+				error: 'Server error. Try again later.',
+				values: {
+					email
+				}
+			})
 		}
+
+		throw redirect(303, '/')
 	}
 }
