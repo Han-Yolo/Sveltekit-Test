@@ -65,8 +65,8 @@
 <h1>Bonjour</h1>
 
 {#if !data.session}
-	<a href="/login" role="button" style="width: 100%; margin-bottom: 1em">Login</a>
-	<a href="/register" role="button" style="width: 100%; margin-bottom: 1em">Register</a>
+	<a href="/login" role="button" class="link_button">Login</a>
+	<a href="/register" role="button" class="link_button">Register</a>
 	<button on:click={handleGoogleSignIn}> Sign in with Google </button>
 {:else}
 	<h4>Here are your messages:</h4>
@@ -87,19 +87,41 @@
 						<td> {message.content} </td>
 						<td> {new Date(message.created_at).toLocaleString('de-DE')} </td>
 						<td>
-							<button on:click={() => deleteMessage(message.id)} style="width: 3em; height: 3em">
-								X
-							</button>
+							<button on:click={() => deleteMessage(message.id)} class="delete_button"> X </button>
 						</td>
 					</tr>
 				{/each}
 			</tbody>
 		</table>
 		<form method="POST" action="?/add" use:enhance={addEnhance}>
-			<div style="display: flex; justify-content: center; align-items: center; margin-top: 2em;">
+			<div class="add_form">
 				<input name="message" placeholder="New message" />
-				<button style="width: 7em; margin-left: 2em;">Add</button>
+				<button class="add_button">Add</button>
 			</div>
 		</form>
 	{/if}
 {/if}
+
+<style>
+	.link_button {
+		width: 100%;
+		margin-bottom: 1em;
+	}
+
+	.delete_button {
+		width: 3em;
+		height: 3em;
+	}
+
+	.add_form {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-top: 2em;
+	}
+
+	.add_button {
+		width: 7em;
+		margin-left: 2em;
+	}
+</style>
