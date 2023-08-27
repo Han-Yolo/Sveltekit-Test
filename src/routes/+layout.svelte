@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { invalidate } from '$app/navigation'
 	import { onMount } from 'svelte'
+	import { Toaster } from 'svelte-french-toast'
 
 	export let data
 
@@ -22,6 +23,8 @@
 		await supabase.auth.signOut()
 	}
 </script>
+
+<Toaster />
 
 <main class="container">
 	<nav style:margin="2em auto">

@@ -1,13 +1,19 @@
 <script lang="ts">
+	import type { SubmitFunction } from './$types.js'
 	import type { Tables } from '../supabase'
-	import { Toaster, toast } from 'svelte-french-toast'
+	import { enhance } from '$app/forms'
+	import { toast } from 'svelte-french-toast'
 
 	export let data
+	export let form
+
+	$: if (form?.failure) {
+		toast.error(form.failure ?? 'Could not add message')
+	}
 
 	$: ({ supabase, session } = data)
 	// $: messages = data.messages ?? []
-	let messages: Tables<'messages'>[] = []
-	let newMessage = ''
+	let messages: Tables<'messages'>[] | null = null
 
 	const handleGoogleSignIn = async () => {
 		await supabase.auth.signInWithOAuth({
@@ -29,19 +35,6 @@
 		}
 	}
 
-	const addMessage = async () => {
-		if (newMessage) {
-			const { error } = await supabase.from('messages').insert({ content: newMessage })
-			if (error) {
-				console.log(error)
-				toast.error('Could not add message')
-			} else {
-				toast.success('Message added')
-			}
-			loadMessages()
-		}
-	}
-
 	const deleteMessage = async (id: number) => {
 		const { error } = await supabase.from('messages').delete().eq('id', id)
 		if (error) {
@@ -55,9 +48,12 @@
 		loadMessages()
 	}
 
-	const handleKeyDown = async (event: KeyboardEvent) => {
-		if (event.key === 'Enter') {
-			addMessage()
+	const addEnhance: SubmitFunction = ({}) => {
+		return async ({ result, update }) => {
+			if (result.type === 'success') {
+				toast.success('Message added')
+			}
+			update()
 		}
 	}
 
@@ -65,8 +61,6 @@
 		loadMessages()
 	}
 </script>
-
-<Toaster />
 
 <h1>Bonjour</h1>
 
@@ -76,7 +70,7 @@
 	<button on:click={handleGoogleSignIn}> Sign in with Google </button>
 {:else}
 	<h4>Here are your messages:</h4>
-	{#if messages.length === 0}
+	{#if messages === null}
 		<article aria-busy="true" />
 	{:else}
 		<table>
@@ -101,9 +95,11 @@
 				{/each}
 			</tbody>
 		</table>
-		<div style="display: flex; justify-content: center; align-items: center; margin-top: 2em;">
-			<input bind:value={newMessage} on:keydown={handleKeyDown} placeholder="New message" />
-			<button on:click={addMessage} style="width: 7em; margin-left: 2em;">Add</button>
-		</div>
+		<form method="POST" action="?/add" use:enhance={addEnhance}>
+			<div style="display: flex; justify-content: center; align-items: center; margin-top: 2em;">
+				<input name="message" placeholder="New message" />
+				<button style="width: 7em; margin-left: 2em;">Add</button>
+			</div>
+		</form>
 	{/if}
 {/if}
