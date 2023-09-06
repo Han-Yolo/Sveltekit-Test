@@ -27,12 +27,48 @@
 <Toaster />
 
 <main class="container">
-	<nav style:margin="2em auto">
-		<a href="/">Home</a>
-		{#if session}
-			<button on:click={handleSignOut} style:width="6em">Logout</button>
-		{/if}
+	<nav>
+		<ul class="nav-left">
+			<li><a href="/">Home</a></li>
+			<li><a href="/game-of-life">Game of Life</a></li>
+		</ul>
+		<ul class="nav-right">
+			<li>
+				{#if session}
+					<button on:click={handleSignOut}>Logout</button>
+				{/if}
+			</li>
+		</ul>
 	</nav>
 
 	<slot />
 </main>
+
+<style>
+	nav {
+		margin: 2em 0;
+	}
+
+	nav li {
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+
+	nav a {
+		margin-right: 2em;
+	}
+
+	.nav-left li {
+		float: left;
+	}
+
+	.nav-right li {
+		float: right;
+	}
+
+	nav button {
+		width: 6em;
+		height: 2.5em;
+		padding: 0;
+	}
+</style>

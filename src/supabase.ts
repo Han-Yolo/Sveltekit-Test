@@ -3,6 +3,30 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export interface Database {
 	public: {
 		Tables: {
+			game_of_life: {
+				Row: {
+					created_at: string
+					horizontal_world_size: number
+					save_state: boolean[]
+					user_id: string
+					vertical_world_size: number
+				}
+				Insert: {
+					created_at?: string
+					horizontal_world_size?: number
+					save_state?: boolean[]
+					user_id?: string
+					vertical_world_size?: number
+				}
+				Update: {
+					created_at?: string
+					horizontal_world_size?: number
+					save_state?: boolean[]
+					user_id?: string
+					vertical_world_size?: number
+				}
+				Relationships: []
+			}
 			messages: {
 				Row: {
 					content: string

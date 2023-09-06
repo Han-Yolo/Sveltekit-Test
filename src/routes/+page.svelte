@@ -48,7 +48,7 @@
 		loadMessages()
 	}
 
-	const addEnhance: SubmitFunction = ({}) => {
+	const addEnhance: SubmitFunction = () => {
 		return async ({ result, update }) => {
 			if (result.type === 'success') {
 				toast.success('Message added')

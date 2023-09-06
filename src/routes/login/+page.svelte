@@ -7,7 +7,7 @@
 
 	let password = ''
 
-	const loginEnhance: SubmitFunction = ({}) => {
+	const loginEnhance: SubmitFunction = () => {
 		return async ({ result, update }) => {
 			password = ''
 			if (result.type === 'failure') {
