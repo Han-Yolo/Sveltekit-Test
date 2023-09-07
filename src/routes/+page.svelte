@@ -70,7 +70,7 @@
 	{#if !data.session}
 		<a href="/login" role="button" class="link_button">Login</a>
 		<a href="/register" role="button" class="link_button">Register</a>
-		<button on:click={handleGoogleSignIn}> Sign in with Google </button>
+		<button on:click={handleGoogleSignIn} class="bottom_element"> Sign in with Google </button>
 	{:else}
 		<h4>Here are your messages:</h4>
 		{#if messages === null}
@@ -99,8 +99,8 @@
 				</tbody>
 			</table>
 			<form method="POST" action="?/add" use:enhance={addEnhance} class="add_form">
-				<input name="message" placeholder="New message" />
-				<button>Add</button>
+				<input name="message" placeholder="New message" class="bottom_element" />
+				<button class="bottom_element">Add</button>
 			</form>
 		{/if}
 	{/if}
@@ -126,12 +126,11 @@
 		margin-bottom: 0;
 	}
 
-	.add_form input {
-		margin-bottom: 0;
-	}
-
 	.add_form button {
 		width: 7em;
+	}
+
+	.bottom_element {
 		margin-bottom: 0;
 	}
 </style>
