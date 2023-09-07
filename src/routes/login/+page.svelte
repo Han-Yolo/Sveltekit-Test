@@ -18,11 +18,25 @@
 	}
 </script>
 
-<h1>Login</h1>
-<form action="?/login" method="post" use:enhance={loginEnhance}>
-	<label for="email">Email address</label>
-	<input name="email" value={form?.values.email ?? ''} required />
-	<label for="password">Password</label>
-	<input type="password" name="password" bind:value={password} required />
-	<button>Login</button>
-</form>
+<article>
+	<header>
+		<h1>Login</h1>
+	</header>
+	<form action="?/login" method="post" use:enhance={loginEnhance}>
+		<label for="email">Email address</label>
+		<input name="email" value={form?.values.email ?? ''} required />
+		<label for="password">Password</label>
+		<input type="password" name="password" bind:value={password} required />
+		<button>Login</button>
+	</form>
+</article>
+
+<style>
+	form {
+		margin-bottom: 0;
+	}
+
+	form button {
+		margin-bottom: 0;
+	}
+</style>

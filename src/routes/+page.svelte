@@ -62,45 +62,49 @@
 	}
 </script>
 
-<h1>Bonjour</h1>
+<article>
+	<header>
+		<h1>Bonjour</h1>
+	</header>
 
-{#if !data.session}
-	<a href="/login" role="button" class="link_button">Login</a>
-	<a href="/register" role="button" class="link_button">Register</a>
-	<button on:click={handleGoogleSignIn}> Sign in with Google </button>
-{:else}
-	<h4>Here are your messages:</h4>
-	{#if messages === null}
-		<article aria-busy="true" />
+	{#if !data.session}
+		<a href="/login" role="button" class="link_button">Login</a>
+		<a href="/register" role="button" class="link_button">Register</a>
+		<button on:click={handleGoogleSignIn}> Sign in with Google </button>
 	{:else}
-		<table>
-			<thead>
-				<tr>
-					<th scope="col">Content</th>
-					<th scope="col">Creation Date</th>
-					<th scope="col">Delete</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each messages as message}
+		<h4>Here are your messages:</h4>
+		{#if messages === null}
+			<article aria-busy="true" />
+		{:else}
+			<table>
+				<thead>
 					<tr>
-						<td> {message.content} </td>
-						<td> {new Date(message.created_at).toLocaleString('de-DE')} </td>
-						<td>
-							<button on:click={() => deleteMessage(message.id)} class="delete_button"> X </button>
-						</td>
+						<th scope="col">Content</th>
+						<th scope="col">Creation Date</th>
+						<th scope="col">Delete</th>
 					</tr>
-				{/each}
-			</tbody>
-		</table>
-		<form method="POST" action="?/add" use:enhance={addEnhance}>
-			<div class="add_form">
+				</thead>
+				<tbody>
+					{#each messages as message}
+						<tr>
+							<td> {message.content} </td>
+							<td> {new Date(message.created_at).toLocaleString('de-DE')} </td>
+							<td>
+								<button on:click={() => deleteMessage(message.id)} class="delete_button">
+									X
+								</button>
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+			<form method="POST" action="?/add" use:enhance={addEnhance} class="add_form">
 				<input name="message" placeholder="New message" />
-				<button class="add_button">Add</button>
-			</div>
-		</form>
+				<button>Add</button>
+			</form>
+		{/if}
 	{/if}
-{/if}
+</article>
 
 <style>
 	.link_button {
@@ -115,13 +119,19 @@
 
 	.add_form {
 		display: flex;
+		gap: 2em;
 		justify-content: center;
 		align-items: center;
 		margin-top: 2em;
+		margin-bottom: 0;
 	}
 
-	.add_button {
+	.add_form input {
+		margin-bottom: 0;
+	}
+
+	.add_form button {
 		width: 7em;
-		margin-left: 2em;
+		margin-bottom: 0;
 	}
 </style>

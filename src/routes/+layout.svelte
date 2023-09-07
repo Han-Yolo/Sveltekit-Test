@@ -3,6 +3,8 @@
 	import { onMount } from 'svelte'
 	import { Toaster } from 'svelte-french-toast'
 
+	import '../app.css'
+
 	export let data
 
 	$: ({ supabase, session } = data)
@@ -28,17 +30,15 @@
 
 <main class="container">
 	<nav>
-		<ul class="nav-left">
-			<li><a href="/">Home</a></li>
-			<li><a href="/game-of-life">Game of Life</a></li>
-		</ul>
-		<ul class="nav-right">
-			<li>
-				{#if session}
-					<button on:click={handleSignOut}>Logout</button>
-				{/if}
-			</li>
-		</ul>
+		<div class="nav-left">
+			<a href="/">Home</a>
+			<a href="/game-of-life">Game of Life</a>
+		</div>
+		<div class="nav-right">
+			<button on:click={handleSignOut} style:visibility={session ? 'visible' : 'hidden'}
+				>Logout</button
+			>
+		</div>
 	</nav>
 
 	<slot />
@@ -49,26 +49,23 @@
 		margin: 2em 0;
 	}
 
-	nav li {
-		padding-top: 0;
-		padding-bottom: 0;
-	}
-
-	nav a {
-		margin-right: 2em;
-	}
-
-	.nav-left li {
+	.nav-left {
 		float: left;
+		display: flex;
+		gap: 2em;
+		padding-top: 0.5em;
 	}
 
-	.nav-right li {
+	.nav-right {
 		float: right;
+		display: flex;
+		gap: 2em;
 	}
 
 	nav button {
 		width: 6em;
 		height: 2.5em;
 		padding: 0;
+		margin: 0;
 	}
 </style>

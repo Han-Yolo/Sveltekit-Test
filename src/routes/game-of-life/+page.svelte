@@ -1,29 +1,41 @@
 <script lang="ts">
 	import toast from 'svelte-french-toast'
 
+	import type { World } from './worlds'
+	import { pulsar } from './worlds'
+
 	export let data
 
 	$: ({ supabase, session } = data)
 
-	let horizontalPixels = 30
-	let verticalPixels = 15
-	let totalPixels = 0
-	let loadFlag = false // Used to keep initPixels() from overwriting the pixels after they were loaded from storage.
+	let pixels: boolean[]
+	let horizontalPixels: number
+	let verticalPixels: number
+	let totalPixels: number
+
+	let speed_1_s = 7
+	let running = false
+
+	let newWorldFlag = false // Used to keep initPixels() from overwriting the pixels after they were set to a new world.
 	$: {
 		totalPixels = horizontalPixels * verticalPixels
-		if (!loadFlag) {
+		if (!newWorldFlag) {
 			initPixels()
 		}
-		loadFlag = false
+		newWorldFlag = false
 	}
-
-	let cycleIntervalId: number = 0
-
-	let pixels: boolean[]
 
 	const initPixels = () => {
 		pixels = new Array(totalPixels).fill(false)
 	}
+
+	const setWorld = (world: World) => {
+		pixels = world.pixels
+		horizontalPixels = world.horizontalPixels
+		verticalPixels = world.verticalPixels
+		newWorldFlag = true
+	}
+	setWorld(pulsar)
 
 	const getIndex = (x: number, y: number): number => {
 		return y * horizontalPixels + x
@@ -56,6 +68,10 @@
 	}
 
 	const runCycle = () => {
+		if (running) {
+			setTimeout(runCycle, 1000 / speed_1_s)
+		}
+
 		let futurePixels: boolean[] = new Array(totalPixels)
 		pixels.forEach((pixel, i) => {
 			const { x, y } = getCoordinates(i)
@@ -100,10 +116,11 @@
 			toast.error('Could not load world')
 		}
 		if (data) {
-			horizontalPixels = data.horizontal_world_size
-			verticalPixels = data.vertical_world_size
-			pixels = data.save_state
-			loadFlag = true
+			setWorld({
+				pixels: data.save_state,
+				horizontalPixels: data.horizontal_world_size,
+				verticalPixels: data.vertical_world_size
+			})
 			toast.success('World loaded')
 		}
 	}
@@ -122,13 +139,17 @@
 			</div>
 		</div>
 		<div class="controll">
-			{#if !cycleIntervalId}
-				<button on:click={() => (cycleIntervalId = window.setInterval(runCycle, 100))}>Run</button>
+			{#if !running}
+				<button
+					on:click={() => {
+						running = true
+						runCycle()
+					}}>Run</button
+				>
 			{:else}
 				<button
 					on:click={() => {
-						window.clearInterval(cycleIntervalId)
-						cycleIntervalId = 0
+						running = false
 					}}>Pause</button
 				>
 			{/if}
@@ -136,18 +157,32 @@
 			<button
 				on:click={saveWorld}
 				disabled={!session}
-				data-tooltip={session ? null : 'Login to save'}>Save</button
+				data-tooltip={session ? null : 'Login to save'}
+				data-placement="bottom">Save</button
 			>
 			<button
 				on:click={loadWorld}
 				disabled={!session}
-				data-tooltip={session ? null : 'Login to load'}>Load</button
+				data-tooltip={session ? null : 'Login to load'}
+				data-placement="bottom">Load</button
 			>
+		</div>
+		<div class="controll">
+			<label for="speed" class="controll_bottom">Speed</label>
+			<input
+				bind:value={speed_1_s}
+				type="range"
+				name="speed"
+				min="1"
+				max="20"
+				class="controll_bottom"
+			/>
 		</div>
 	</header>
 
 	<div class="world" style="--HORIZONTAL_PIXELS:{horizontalPixels}">
 		{#each pixels as pixel, i}
+			<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
 			<div on:click={() => onPixelClick(i)} class="cell {pixel ? 'alive' : 'dead'}" />
 		{/each}
 	</div>
@@ -161,8 +196,12 @@
 	}
 	.controll button {
 		pointer-events: auto;
+	}
+
+	.controll_bottom {
 		margin-bottom: 0;
 	}
+
 	.world {
 		display: grid;
 		grid-template-columns: repeat(var(--HORIZONTAL_PIXELS), 1fr);
