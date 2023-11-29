@@ -106,10 +106,13 @@
 	}
 
 	const loadWorld = async () => {
+		if (!session) {
+			return
+		}
 		const { data, error } = await supabase
 			.from('game_of_life')
 			.select('save_state, horizontal_world_size, vertical_world_size')
-			.eq('user_id', session?.user.id)
+			.eq('user_id', session.user.id)
 			.limit(1)
 			.single()
 		if (error) {

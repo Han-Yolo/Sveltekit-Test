@@ -22,10 +22,13 @@
 	}
 
 	const loadMessages = async () => {
+		if (!session) {
+			return
+		}
 		const { data, error } = await supabase
 			.from('messages')
 			.select('*')
-			.eq('user_id', session?.user.id)
+			.eq('user_id', session.user.id)
 
 		if (error) {
 			console.log('Getting messages failed')
